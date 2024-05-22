@@ -21,30 +21,121 @@
 
 
 module sevsegdisplay(
-    
+        input wire [5:0] min,
+        input wire [5:0] sec,
+        input clk,
+        output reg [6:0] seg,
+        output reg [3:0] digit
     );
     
+    
+    
+    
+
+    
     reg hex;
-    reg [6:0] seg;
-     always @*
-       begin
-           case(hex)
-               4'h0: seg[6:0] = 7'b1000000;    // digit 0
-               4'h1: seg[6:0] = 7'b1111001;    // digit 1
-               4'h2: seg[6:0] = 7'b0100100;    // digit 2
-               4'h3: seg[6:0] = 7'b0110000;    // digit 3
-               4'h4: seg[6:0] = 7'b0011001;    // digit 4
-               4'h5: seg[6:0] = 7'b0010010;    // digit 5
-               4'h6: seg[6:0] = 7'b0000010;    // digit 6
-               4'h7: seg[6:0] = 7'b1111000;    // digit 7
-               4'h8: seg[6:0] = 7'b0000000;    // digit 8
-               4'h9: seg[6:0] = 7'b0010000;    // digit 9
-               4'ha: seg[6:0] = 7'b0001000;    // digit A
-               4'hb: seg[6:0] = 7'b0000011;    // digit B
-               4'hc: seg[6:0] = 7'b1000110;    // digit C
-               4'hd: seg[6:0] = 7'b0100001;    // digit D
-               4'he: seg[6:0] = 7'b0000110;    // digit E
-               default: seg[6:0] = 7'b0001110; // digit F
-           endcase
+    reg [1:0] digit_select;
+    reg [3:0] secondOnes;
+    reg [3:0] secondTens;
+    reg [3:0] minuteOnes;
+    reg [3:0] minuteTens;
+    
+    reg [16:0] refreshTimer;
+    
+    
+    initial begin
+        refreshTimer = 0;
+        secondOnes = 0;
+        secondTens = 0;
+        minuteOnes =0 ;
+        minuteTens = 0;
+        digit_select = 0;
+    end
+   always @ (posedge clk) begin
+        if(refreshTimer == 10) begin
+            refreshTimer <= 0;
+            digit_select <= digit_select + 1;
+         end
+         else 
+            refreshTimer <= refreshTimer + 1;
+   end
+   
+   
+   always @(digit_select) begin
+        case (digit_select)
+            2'b00 : digit = 4'b1110; 
+            2'b01 : digit = 4'b1101;
+            2'b10 : digit = 4'b1011;
+            2'b11 : digit = 4'b0111;
+        endcase
+   end
+   
+     always @ * begin
+        secondOnes = sec % 10;
+        secondTens = sec / 10;
+        minuteOnes = min % 10;
+        minuteTens = min / 10;
+           case(digit_select)
+                2'b00 : begin
+                case(secondOnes)
+                   4'b0000: seg[6:0] = 7'b000_0001;    // digit 0
+                   4'b0001: seg[6:0] = 7'b100_1111;    // digit 1
+                   4'b0010: seg[6:0] = 7'b001_0010;    // digit 2
+                   4'b0011: seg[6:0] = 7'b000_0110;    // digit 3
+                   4'b0100: seg[6:0] = 7'b100_1100;    // digit 4
+                   4'b0101: seg[6:0] = 7'b010_0100;    // digit 5
+                   4'b0110: seg[6:0] = 7'b010_0000;    // digit 6
+                   4'b0111: seg[6:0] = 7'b000_1111;    // digit 7
+                   4'b1000: seg[6:0] = 7'b000_0000;    // digit 8
+                   4'b1001: seg[6:0] = 7'b000_0100;    // digit 9
+                   default: seg[6:0] = 7'b000_0100; 
+                endcase 
+                end
+                2'b01 : begin
+                case(secondTens)
+                   4'b0000: seg[6:0] = 7'b000_0001;    // digit 0
+                   4'b0001: seg[6:0] = 7'b100_1111;    // digit 1
+                   4'b0010: seg[6:0] = 7'b001_0010;    // digit 2
+                   4'b0011: seg[6:0] = 7'b000_0110;    // digit 3
+                   4'b0100: seg[6:0] = 7'b100_1100;    // digit 4
+                   4'b0101: seg[6:0] = 7'b010_0100;    // digit 5
+                   4'b0110: seg[6:0] = 7'b010_0000;    // digit 6
+                   4'b0111: seg[6:0] = 7'b000_1111;    // digit 7
+                   4'b1000: seg[6:0] = 7'b000_0000;    // digit 8
+                   4'b1001: seg[6:0] = 7'b000_0100;    // digit 9
+                   default: seg[6:0] = 7'b000_0100; 
+                endcase
+                end
+                2'b10 : begin
+                case(minuteOnes)
+                   4'b0000: seg[6:0] = 7'b000_0001;    // digit 0
+                   4'b0001: seg[6:0] = 7'b100_1111;    // digit 1
+                   4'b0010: seg[6:0] = 7'b001_0010;    // digit 2
+                   4'b0011: seg[6:0] = 7'b000_0110;    // digit 3
+                   4'b0100: seg[6:0] = 7'b100_1100;    // digit 4
+                   4'b0101: seg[6:0] = 7'b010_0100;    // digit 5
+                   4'b0110: seg[6:0] = 7'b010_0000;    // digit 6
+                   4'b0111: seg[6:0] = 7'b000_1111;    // digit 7
+                   4'b1000: seg[6:0] = 7'b000_0000;    // digit 8
+                   4'b1001: seg[6:0] = 7'b000_0100;    // digit 9
+                   default: seg[6:0] = 7'b000_0100; 
+                endcase
+                end
+                2'b11 : begin
+                case(minuteTens)
+                   4'b0000: seg[6:0] = 7'b000_0001;    // digit 0
+                   4'b0001: seg[6:0] = 7'b100_1111;    // digit 1
+                   4'b0010: seg[6:0] = 7'b001_0010;    // digit 2
+                   4'b0011: seg[6:0] = 7'b000_0110;    // digit 3
+                   4'b0100: seg[6:0] = 7'b100_1100;    // digit 4
+                   4'b0101: seg[6:0] = 7'b010_0100;    // digit 5
+                   4'b0110: seg[6:0] = 7'b010_0000;    // digit 6
+                   4'b0111: seg[6:0] = 7'b000_1111;    // digit 7
+                   4'b1000: seg[6:0] = 7'b000_0000;    // digit 8
+                   4'b1001: seg[6:0] = 7'b000_0100;    // digit 9
+                   default: seg[6:0] = 7'b000_0100; 
+                endcase
+               end
+         endcase
        end
 endmodule

@@ -22,8 +22,8 @@
 
 module counting(
     input wire timer,
-    input wire reset,
-    input wire enable,
+//    input wire reset,
+//    input wire enable,
     output reg [5:0] minutes,
     output reg [5:0] seconds
     
@@ -37,22 +37,35 @@ module counting(
 
     
     always @ (posedge timer) begin
-        if (reset) begin
+        if (seconds == 59) begin
             seconds <= 0;
-            minutes <= 0;
-        end
-        if (enable) begin
-            if(seconds == 59) begin
-                minutes <= minutes + 1;
-                seconds <= 0;
-                if (minutes == 60) begin
-                    minutes <= 0;
-                    seconds <= 0;
-                end
+            if(minutes == 59) begin
+                minutes <= 0;
             end
-            else begin
-                 seconds <= seconds + 1;
-            end
-        end
+            minutes <= minutes + 1;
+        
+        end    
+        else begin
+            seconds <= seconds + 1;
+        end     
+        
+       
+//         if (reset) begin
+//            seconds <= 0;
+//            minutes <= 0;
+      //  end
+//        if (enable) begin
+//            if(seconds == 59) begin
+//                minutes <= minutes + 1;
+//                seconds <= 0;
+//                if (minutes == 60) begin
+//                    minutes <= 0;
+//                    seconds <= 0;
+//                end
+//            end
+//            else begin
+//                 seconds <= seconds + 1;
+//            end
+       // end
     end
 endmodule
