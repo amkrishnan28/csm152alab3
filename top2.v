@@ -1,19 +1,14 @@
-module top (
+module top2 (
     input wire clk,
     input wire btnD,
+    input wire btnU,
    // input wire reset,
   //  input wire enable,
     output wire [0:6] seg,
     output wire [3:0] an
 );
     reg enable;
-    reg rst;
-    initial begin
-        enable = 1;
-        rst = 0;
-    end;
-    
-    
+    reg reset;
     wire [5:0] minutes;
     wire [5:0] seconds;
     wire clk_100MHz; // 100 MHz master clock input
@@ -29,12 +24,11 @@ module top (
         .clk_fast(clk_fast),
         .clk_adjust(clk_adjust)
     );
-    
-    
+
     // Instantiate the counting module
     counting uut (
         .timer(clk_1Hz),
-        .reset(rst),
+        .reset(reset),
         .enable(enable),
         .minutes(minutes),
         .seconds(seconds)
@@ -48,9 +42,12 @@ module top (
         .seg(seg),
         .digit(an)// Use the same clock for simplicity
     );
-
-
-    always @ (clk_100MHz) begin
-        rst = btnD;
+    
+    always @ (posedge clk) begin
+        reset = btnD;
+        if(btnU == 1) begin
+            enable = ~enable;
+        end
     end
+
 endmodule

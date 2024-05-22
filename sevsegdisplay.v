@@ -24,7 +24,7 @@ module sevsegdisplay(
         input wire [5:0] min,
         input wire [5:0] sec,
         input clk,
-        output reg [6:0] seg,
+        output reg [0:6] seg,
         output reg [3:0] digit
     );
     
@@ -50,14 +50,17 @@ module sevsegdisplay(
         minuteOnes =0 ;
         minuteTens = 0;
         digit_select = 0;
+        seg = 0;
+        digit = 0;
     end
    always @ (posedge clk) begin
-        if(refreshTimer == 10) begin
+        if(refreshTimer == 99_999) begin
             refreshTimer <= 0;
             digit_select <= digit_select + 1;
          end
-         else 
+         else begin
             refreshTimer <= refreshTimer + 1;
+        end
    end
    
    
@@ -70,7 +73,7 @@ module sevsegdisplay(
         endcase
    end
    
-     always @ * begin
+     always @ (secondOnes, secondTens, minuteOnes, minuteTens) begin
         secondOnes = sec % 10;
         secondTens = sec / 10;
         minuteOnes = min % 10;
@@ -78,62 +81,62 @@ module sevsegdisplay(
            case(digit_select)
                 2'b00 : begin
                 case(secondOnes)
-                   4'b0000: seg[6:0] = 7'b000_0001;    // digit 0
-                   4'b0001: seg[6:0] = 7'b100_1111;    // digit 1
-                   4'b0010: seg[6:0] = 7'b001_0010;    // digit 2
-                   4'b0011: seg[6:0] = 7'b000_0110;    // digit 3
-                   4'b0100: seg[6:0] = 7'b100_1100;    // digit 4
-                   4'b0101: seg[6:0] = 7'b010_0100;    // digit 5
-                   4'b0110: seg[6:0] = 7'b010_0000;    // digit 6
-                   4'b0111: seg[6:0] = 7'b000_1111;    // digit 7
-                   4'b1000: seg[6:0] = 7'b000_0000;    // digit 8
-                   4'b1001: seg[6:0] = 7'b000_0100;    // digit 9
-                   default: seg[6:0] = 7'b000_0100; 
+                   4'b0000: seg= 7'b000_0001;    // digit 0
+                   4'b0001: seg = 7'b100_1111;    // digit 1
+                   4'b0010: seg = 7'b001_0010;    // digit 2
+                   4'b0011: seg = 7'b000_0110;    // digit 3
+                   4'b0100: seg = 7'b100_1100;    // digit 4
+                   4'b0101: seg = 7'b010_0100;    // digit 5
+                   4'b0110: seg = 7'b010_0000;    // digit 6
+                   4'b0111: seg = 7'b000_1111;    // digit 7
+                   4'b1000: seg= 7'b000_0000;    // digit 8
+                   4'b1001: seg = 7'b000_0100;    // digit 9
+                   default: seg= 7'b000_0100;  
                 endcase 
                 end
                 2'b01 : begin
                 case(secondTens)
-                   4'b0000: seg[6:0] = 7'b000_0001;    // digit 0
-                   4'b0001: seg[6:0] = 7'b100_1111;    // digit 1
-                   4'b0010: seg[6:0] = 7'b001_0010;    // digit 2
-                   4'b0011: seg[6:0] = 7'b000_0110;    // digit 3
-                   4'b0100: seg[6:0] = 7'b100_1100;    // digit 4
-                   4'b0101: seg[6:0] = 7'b010_0100;    // digit 5
-                   4'b0110: seg[6:0] = 7'b010_0000;    // digit 6
-                   4'b0111: seg[6:0] = 7'b000_1111;    // digit 7
-                   4'b1000: seg[6:0] = 7'b000_0000;    // digit 8
-                   4'b1001: seg[6:0] = 7'b000_0100;    // digit 9
-                   default: seg[6:0] = 7'b000_0100; 
+                      4'b0000: seg= 7'b000_0001;    // digit 0
+                                  4'b0001: seg = 7'b100_1111;    // digit 1
+                                  4'b0010: seg = 7'b001_0010;    // digit 2
+                                  4'b0011: seg = 7'b000_0110;    // digit 3
+                                  4'b0100: seg = 7'b100_1100;    // digit 4
+                                  4'b0101: seg = 7'b010_0100;    // digit 5
+                                  4'b0110: seg = 7'b010_0000;    // digit 6
+                                  4'b0111: seg = 7'b000_1111;    // digit 7
+                                  4'b1000: seg= 7'b000_0000;    // digit 8
+                                  4'b1001: seg = 7'b000_0100;    // digit 9
+                                  default: seg= 7'b000_0100;  
                 endcase
                 end
                 2'b10 : begin
                 case(minuteOnes)
-                   4'b0000: seg[6:0] = 7'b000_0001;    // digit 0
-                   4'b0001: seg[6:0] = 7'b100_1111;    // digit 1
-                   4'b0010: seg[6:0] = 7'b001_0010;    // digit 2
-                   4'b0011: seg[6:0] = 7'b000_0110;    // digit 3
-                   4'b0100: seg[6:0] = 7'b100_1100;    // digit 4
-                   4'b0101: seg[6:0] = 7'b010_0100;    // digit 5
-                   4'b0110: seg[6:0] = 7'b010_0000;    // digit 6
-                   4'b0111: seg[6:0] = 7'b000_1111;    // digit 7
-                   4'b1000: seg[6:0] = 7'b000_0000;    // digit 8
-                   4'b1001: seg[6:0] = 7'b000_0100;    // digit 9
-                   default: seg[6:0] = 7'b000_0100; 
+                4'b0000: seg= 7'b000_0001;    // digit 0
+                                  4'b0001: seg = 7'b100_1111;    // digit 1
+                                  4'b0010: seg = 7'b001_0010;    // digit 2
+                                  4'b0011: seg = 7'b000_0110;    // digit 3
+                                  4'b0100: seg = 7'b100_1100;    // digit 4
+                                  4'b0101: seg = 7'b010_0100;    // digit 5
+                                  4'b0110: seg = 7'b010_0000;    // digit 6
+                                  4'b0111: seg = 7'b000_1111;    // digit 7
+                                  4'b1000: seg= 7'b000_0000;    // digit 8
+                                  4'b1001: seg = 7'b000_0100;    // digit 9
+                                  default: seg= 7'b000_0100;  
                 endcase
                 end
                 2'b11 : begin
                 case(minuteTens)
-                   4'b0000: seg[6:0] = 7'b000_0001;    // digit 0
-                   4'b0001: seg[6:0] = 7'b100_1111;    // digit 1
-                   4'b0010: seg[6:0] = 7'b001_0010;    // digit 2
-                   4'b0011: seg[6:0] = 7'b000_0110;    // digit 3
-                   4'b0100: seg[6:0] = 7'b100_1100;    // digit 4
-                   4'b0101: seg[6:0] = 7'b010_0100;    // digit 5
-                   4'b0110: seg[6:0] = 7'b010_0000;    // digit 6
-                   4'b0111: seg[6:0] = 7'b000_1111;    // digit 7
-                   4'b1000: seg[6:0] = 7'b000_0000;    // digit 8
-                   4'b1001: seg[6:0] = 7'b000_0100;    // digit 9
-                   default: seg[6:0] = 7'b000_0100; 
+                     4'b0000: seg= 7'b000_0001;    // digit 0
+                                  4'b0001: seg = 7'b100_1111;    // digit 1
+                                  4'b0010: seg = 7'b001_0010;    // digit 2
+                                  4'b0011: seg = 7'b000_0110;    // digit 3
+                                  4'b0100: seg = 7'b100_1100;    // digit 4
+                                  4'b0101: seg = 7'b010_0100;    // digit 5
+                                  4'b0110: seg = 7'b010_0000;    // digit 6
+                                  4'b0111: seg = 7'b000_1111;    // digit 7
+                                  4'b1000: seg= 7'b000_0000;    // digit 8
+                                  4'b1001: seg = 7'b000_0100;    // digit 9
+                                  default: seg= 7'b000_0100;  
                 endcase
                end
          endcase
