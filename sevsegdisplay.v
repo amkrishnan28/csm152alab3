@@ -23,9 +23,11 @@
 module sevsegdisplay(
         input wire [5:0] min,
         input wire [5:0] sec,
+        input wire adjust,
         input clk,
         output reg [0:6] seg,
         output reg [3:0] digit
+        
     );
     
     
@@ -41,8 +43,8 @@ module sevsegdisplay(
     reg [3:0] minuteTens;
     
     reg [16:0] refreshTimer;
-    
-    
+    reg [16:0] blinkTimer;
+    reg blink;
     initial begin
         refreshTimer = 0;
         secondOnes = 0;
@@ -52,15 +54,29 @@ module sevsegdisplay(
         digit_select = 0;
         seg = 0;
         digit = 0;
+        blink = 0;
     end
    always @ (posedge clk) begin
-        if(refreshTimer == 99_999) begin
-            refreshTimer <= 0;
-            digit_select <= digit_select + 1;
-         end
-         else begin
-            refreshTimer <= refreshTimer + 1;
+       if(adjust) begin
+            if(blinkTimer == 100) begin
+                 blinkTimer <= 0;
+                 blink = ~blink;
+            end
+            
+            else begin
+                blinkTimer <= blinkTimer + 1;
+            end
+             
         end
+        
+        else begin
+            blink <= 0;
+            blinkTimer <= 0;
+        end
+        
+ 
+        digit_select <= digit_select + 1;
+      
    end
    
    
@@ -78,6 +94,11 @@ module sevsegdisplay(
         secondTens = sec / 10;
         minuteOnes = min % 10;
         minuteTens = min / 10;
+        if(blink == 1) begin
+            seg = 7'b111_1111;
+        end
+        
+        else begin
            case(digit_select)
                 2'b00 : begin
                 case(secondOnes)
@@ -140,5 +161,6 @@ module sevsegdisplay(
                 endcase
                end
          endcase
+         end
        end
 endmodule
