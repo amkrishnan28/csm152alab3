@@ -30,10 +30,10 @@ module clk(
 
     );
     
-    reg [23:0] counter_2Hz;
-    reg [24:0] counter_1Hz;
-    reg [9:0] counter_fast;
-    reg [22:0] counter_adjust;
+    reg [32:0] counter_2Hz;
+    reg [32:0] counter_1Hz;
+    reg [32:0] counter_fast;
+    reg [32:0] counter_adjust;
     
     initial begin 
          clk_2Hz <= 0;
@@ -52,22 +52,22 @@ module clk(
         counter_fast <= counter_fast + 1;
         counter_adjust <= counter_adjust + 1;
     
-        if (counter_2Hz == 500000000) begin
+        if (counter_2Hz == 25_000_000) begin
             clk_2Hz <= ~clk_2Hz;
             counter_2Hz <= 0;
         end
     
-        if (counter_1Hz == 100_00_000) begin
+        if (counter_1Hz == 50_000_000) begin
             clk_1Hz <= ~clk_1Hz;
             counter_1Hz <= 0;
         end
     
-        if (counter_fast == 1000000) begin
+        if (counter_fast == 142857) begin
             clk_fast <= ~clk_fast;
             counter_fast <= 0;
         end
     
-        if (counter_adjust == 500000) begin
+        if (counter_adjust == 50_000_000) begin
             clk_adjust <= ~clk_adjust;
             counter_adjust <= 0;
         end
