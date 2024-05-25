@@ -30,11 +30,13 @@ module counting(
     output reg [5:0] seconds
     
     );
-    
 
-    
-    always @ (posedge timer) begin
-        if(adjust) begin
+    always @ (posedge timer or posedge reset) begin
+        if (reset) begin
+            seconds <= 0;
+            minutes <= 0;
+        end
+        else if(adjust && enable) begin
             if(select == 0) begin
                 if(minutes == 59) begin
                     minutes <= 0;
@@ -52,10 +54,8 @@ module counting(
                 end
             end
         end
-        else if (reset) begin
-            seconds <= 0;
-            minutes <= 0;
-        end
+       
+
         else if (seconds == 59) begin
             seconds <= 0;
             if(minutes == 59) begin

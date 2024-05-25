@@ -24,6 +24,7 @@ module sevsegdisplay(
         input wire [5:0] min,
         input wire [5:0] sec,
         input wire adjust,
+        input wire selection,
         input clk,
         output reg [0:6] seg,
         output reg [3:0] digit
@@ -94,12 +95,9 @@ module sevsegdisplay(
         secondTens = sec / 10;
         minuteOnes = min % 10;
         minuteTens = min / 10;
-        if(blink == 1) begin
-            seg = 7'b111_1111;
-        end
-        
-        else begin
-           case(digit_select)
+       
+       case(digit_select)
+                
                 2'b00 : begin
                 case(secondOnes)
                    4'b0000: seg= 7'b000_0001;    // digit 0
@@ -114,6 +112,15 @@ module sevsegdisplay(
                    4'b1001: seg = 7'b000_0100;    // digit 9
                    default: seg= 7'b000_0100;  
                 endcase 
+                
+                if(adjust == 1) begin
+                    if(selection == 1) begin
+                        if(blink == 1) begin
+                            seg= 7'b111_1111;
+                        end
+                    end
+                end
+             
                 end
                 2'b01 : begin
                 case(secondTens)
@@ -129,6 +136,14 @@ module sevsegdisplay(
                                   4'b1001: seg = 7'b000_0100;    // digit 9
                                   default: seg= 7'b000_0100;  
                 endcase
+                
+                 if(adjust == 1) begin
+                    if(selection == 1) begin
+                        if(blink == 1) begin
+                            seg= 7'b111_1111;
+                        end
+                    end
+                end
                 end
                 2'b10 : begin
                 case(minuteOnes)
@@ -144,6 +159,14 @@ module sevsegdisplay(
                                   4'b1001: seg = 7'b000_0100;    // digit 9
                                   default: seg= 7'b000_0100;  
                 endcase
+                
+                if(adjust == 1) begin
+                    if(selection == 0) begin
+                        if(blink == 1) begin
+                            seg= 7'b111_1111;
+                        end
+                    end
+                end
                 end
                 2'b11 : begin
                 case(minuteTens)
@@ -159,8 +182,15 @@ module sevsegdisplay(
                                   4'b1001: seg = 7'b000_0100;    // digit 9
                                   default: seg= 7'b000_0100;  
                 endcase
+                
+                if(adjust == 1) begin
+                    if(selection == 0) begin
+                        if(blink == 1) begin
+                            seg= 7'b111_1111;
+                        end
+                    end
+                end
                end
          endcase
-         end
        end
 endmodule
